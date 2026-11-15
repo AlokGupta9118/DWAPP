@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import {
   Activity, ArrowRight, Bell, BookOpen, Brain, CalendarDays, Check, CheckCircle2,
   CircleHelp, Clock3, Coffee, Flame, Heart, Home, Leaf, ListTodo, Menu, Moon,
-  MoreHorizontal, Pause, Play, Plus, RotateCcw, Shield, ShieldCheck, Sparkles,
+  Download, MoreHorizontal, Pause, Play, Plus, RotateCcw, Shield, ShieldCheck, Sparkles,
   Sprout, Sun, Target, Timer, Trash2, TrendingUp, Volume2, Waves, X, Zap
 } from 'lucide-react';
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
@@ -14,6 +14,10 @@ type SessionPlan = { title: string; subject: string; totalMinutes: number; block
 type ActiveSession = SessionPlan & { phase: Phase; phaseRemaining: number; phaseTotal: number; elapsedSeconds: number; completedBlocks: number; breaksTaken: number; lastTick: number };
 type SessionSummary = SessionPlan & { date: string; actualMinutes: number; completedBlocks: number; breaksTaken: number; completed: boolean; reflection: string };
 type Page = 'overview' | 'focus' | 'planner' | 'distractions' | 'notifications' | 'winddown' | 'insights';
+interface BeforeInstallPromptEvent extends Event {
+  prompt: () => Promise<void>;
+  userChoice: Promise<{ outcome: 'accepted' | 'dismissed'; platform: string }>;
+}
 
 const initialTasks: Task[] = [
   { id: 1, title: 'Revise operating systems notes', time: '09:00 AM', done: false, tag: 'Study' },
@@ -33,6 +37,9 @@ function useSaved<T>(key: string, initial: T): [T, (value: T | ((old: T) => T)) 
 function App() {
   const [page, setPage] = useState<Page>('overview');
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [installPrompt, setInstallPrompt] = useState<BeforeInstallPromptEvent | null>(null);
+  const [installed, setInstalled] = useState(() => window.matchMedia('(display-mode: standalone)').matches || (window.navigator as Navigator & { standalone?: boolean }).standalone === true);
+  const [showInstallHelp, setShowInstallHelp] = useState(false);
   const [tasks, setTasks] = useSaved<Task[]>('ff_tasks', initialTasks);
   const [apps, setApps] = useSaved<string[]>('ff_apps', defaultApps);
   const [allowed, setAllowed] = useSaved<string[]>('ff_allowed', ['Calls', 'Family', 'Calendar']);
@@ -67,6 +74,34 @@ function App() {
     { id: 'insights' as Page, label: 'My insights', icon: TrendingUp }
   ];
   const title = nav.find(item => item.id === page)?.label || 'Overview';
+
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (event: Event) => {
+      event.preventDefault();
+      setInstallPrompt(event as BeforeInstallPromptEvent);
+    };
+    const handleAppInstalled = () => {
+      setInstalled(true);
+      setInstallPrompt(null);
+    };
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    window.addEventListener('appinstalled', handleAppInstalled);
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+      window.removeEventListener('appinstalled', handleAppInstalled);
+    };
+  }, []);
+
+  const installApp = async () => {
+    if (!installPrompt) {
+      setShowInstallHelp(true);
+      return;
+    }
+    await installPrompt.prompt();
+    const choice = await installPrompt.userChoice;
+    setInstallPrompt(null);
+    if (choice.outcome === 'accepted') setInstalled(true);
+  };
 
   useEffect(() => {
     if (!active) return;
@@ -122,7 +157,7 @@ function App() {
       <div className="workspace-label">WORKSPACE</div><nav>{nav.map(item => <button key={item.id} className={`nav-item ${page === item.id ? 'active' : ''}`} onClick={() => { setPage(item.id); setMobileOpen(false); }}><item.icon size={18} /><span>{item.label}</span>{item.id === 'focus' && active && <span className="nav-dot" />}</button>)}</nav>
       <div className="sidebar-bottom"><div className="sidebar-quote"><div className="quote-icon"><Leaf size={17} /></div><p>Small steps create space for big things.</p><span>YOUR DAILY REMINDER</span></div><div className="profile"><div className="avatar">A</div><div><b>My space</b><span>Personal workspace</span></div><MoreHorizontal size={19} className="muted" /></div></div>
     </aside>
-    <main className="main"><header className="topbar"><button className="icon-btn menu-btn" onClick={() => setMobileOpen(true)}><Menu size={20} /></button><div className="crumb">Workspace <span>/</span> <b>{title}</b></div><div className="top-actions"><div className="date-chip"><Sun size={15} /> {new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}</div><button className="icon-btn" title="Help" onClick={() => notify('FocusFlow is your calm space to build better digital habits.')}><CircleHelp size={18} /></button><div className="avatar small">A</div></div></header>
+    <main className="main"><header className="topbar"><button className="icon-btn menu-btn" onClick={() => setMobileOpen(true)}><Menu size={20} /></button><div className="crumb">Workspace <span>/</span> <b>{title}</b></div><div className="top-actions"><div className="date-chip"><Sun size={15} /> {new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}</div>{!installed && <button className="install-btn" onClick={installApp} aria-label="Install FocusFlow" title="Install FocusFlow"><Download size={16} /><span>Install app</span></button>}<button className="icon-btn" title="Help" onClick={() => notify('FocusFlow is your calm space to build better digital habits.')}><CircleHelp size={18} /></button><div className="avatar small">A</div></div></header>
       <div className="content"><AnimatePresence mode="wait"><motion.div key={page} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -5 }} transition={{ duration: .2 }}>
         {page === 'overview' && <><div className="welcome-row"><div><div className="eyebrow"><Sparkles size={14} /> YOUR PERSONAL WELLNESS SPACE</div><h1>A little more focus.<br /><em>A little less noise.</em></h1><p className="subhead">Build a calmer relationship with your screen, one session at a time.</p></div><div className="welcome-art"><div className="sun-disc" /><div className="plant plant-one">✳</div><div className="plant plant-two">✦</div><div className="art-note">breathe in.<br />begin again.</div></div></div>
           <div className="stat-grid"><Stat icon={Clock3} label="FOCUS TODAY" value={`${today} min`} hint="Time well spent" /><Stat icon={Flame} label="TOTAL FOCUS" value={`${totalMinutes} min`} hint="Your effort adds up" /><Stat icon={CheckCircle2} label="TASKS DONE" value={`${completed}/${tasks.length}`} hint={`${progress}% of today's list`} /><Stat icon={Sprout} label="STUDY SESSIONS" value={`${sessions.length}`} hint="Every start counts" /></div>
@@ -140,6 +175,7 @@ function App() {
     <AnimatePresence>{rescue && <Modal title="Distraction Rescue" onClose={() => setRescue(false)}><div className="modal-hero"><div className="rescue-icon large"><Zap size={25} /></div><h2>Pause. Notice. Choose.</h2><p>You don't have to fight the urge. Just create a little space before acting on it.</p></div><div className="rescue-steps"><div><b>01</b><span>Take one slow breath. Relax your shoulders.</span></div><div><b>02</b><span>Ask: What was I planning to do right now?</span></div><div><b>03</b><span>Choose one tiny action to return to your task.</span></div></div><button className="primary-btn full" onClick={() => { setRescue(false); setPage('focus'); notify('Welcome back. Start with just 2 minutes.'); }}>I'm ready to refocus <ArrowRight size={16} /></button></Modal>}</AnimatePresence>
     <AnimatePresence>{breathing && <Modal title="Breathing reset" onClose={() => setBreathing(false)}><Breathing onDone={() => { setBreathing(false); notify('Nice work. Take your next step gently.'); }} /></Modal>}</AnimatePresence>
     <AnimatePresence>{showSummary && lastSummary && <Modal title="Session summary" onClose={() => setShowSummary(false)}><div className="summary-hero"><CheckCircle2 size={28} /><h2>{lastSummary.completed ? 'You made space for your goal.' : 'You made a useful start.'}</h2><p>{lastSummary.title}</p></div><div className="summary-grid"><div><b>{lastSummary.totalMinutes} min</b><span>planned</span></div><div><b>{lastSummary.actualMinutes} min</b><span>actual time</span></div><div><b>{lastSummary.completedBlocks}</b><span>study blocks</span></div><div><b>{lastSummary.breaksTaken}</b><span>breaks taken</span></div></div><label className="summary-label">Optional reflection<textarea className="reflection-input" defaultValue={lastSummary.reflection} placeholder="What helped you focus? What might you try next time?" onBlur={event => updateSummary(event.target.value)} /></label><button className="primary-btn full" onClick={() => setShowSummary(false)}>Done <Check size={15} /></button></Modal>}</AnimatePresence>
+    <AnimatePresence>{showInstallHelp && <Modal title="Install FocusFlow" onClose={() => setShowInstallHelp(false)}><div className="install-help"><p>Add FocusFlow to your home screen for a full-screen app experience.</p><ol><li><b>iPhone or iPad:</b> Open this page in Safari, tap <b>Share</b>, then choose <b>Add to Home Screen</b>.</li><li><b>Android:</b> Open your browser menu and tap <b>Install app</b> or <b>Add to Home screen</b>.</li></ol><button className="primary-btn full" onClick={() => setShowInstallHelp(false)}>Got it <Check size={15} /></button></div></Modal>}</AnimatePresence>
     <AnimatePresence>{toast && <motion.div className="toast" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 12 }}><CheckCircle2 size={17} />{toast}</motion.div>}</AnimatePresence>
   </div>;
 }
