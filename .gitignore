@@ -8,3 +8,7 @@ dist/
 .idea/
 coverage/
 *.log
+*.tsbuildinfo
+
+_metadata/
+extension/_metadata/

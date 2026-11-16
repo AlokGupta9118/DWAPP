@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DigiCalm Shield</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="popup-shell">
+    <header class="header">
+      <div class="brand">
+        <div class="brand-icon">✳</div>
+        <div>
+          <b>DigiCalm Shield</b>
+          <small>Study session website blocker</small>
+        </div>
+      </div>
+      <span class="version-badge">v1.1</span>
+    </header>
+
+    <!-- Status Banner -->
+    <section class="status-card" id="statusCard">
+      <div class="status-indicator">
+        <span class="status-dot" id="statusDot"></span>
+        <b id="statusText">Shield is Off</b>
+      </div>
+      <span class="status-sub" id="statusSub">Selected sites are accessible</span>
+      <div class="active-details hidden" id="activeDetails">
+        <div class="countdown-row">
+          <span class="countdown-label">Time Remaining:</span>
+          <b class="countdown-val" id="countdownVal">45m 00s</b>
+        </div>
+        <div class="task-row" id="taskRow">
+          <span>Task:</span>
+          <b id="taskTitle">Deep Study Session</b>
+        </div>
+      </div>
+    </section>
+
+    <!-- Timer / Duration Selection (Visible when idle) -->
+    <section class="duration-section" id="durationSection">
+      <label class="section-label">SELECT FOCUS DURATION</label>
+      <div class="preset-row">
+        <button class="preset-btn" data-minutes="25">25m</button>
+        <button class="preset-btn active" data-minutes="45">45m</button>
+        <button class="preset-btn" data-minutes="60">60m</button>
+        <button class="preset-btn" data-minutes="90">90m</button>
+      </div>
+      <div class="custom-row">
+        <span>Or custom:</span>
+        <input type="number" id="customMinutes" min="1" max="180" placeholder="min" value="45">
+        <span>minutes</span>
+      </div>
+    </section>
+
+    <!-- Main Actions -->
+    <div class="action-row">
+      <button id="toggleBtn" class="btn-primary">Start Blocking</button>
+      <button id="unlockBtn" class="btn-unlock hidden">Emergency Unlock</button>
+    </div>
+
+    <!-- Stats Bar -->
+    <div class="stats-card">
+      <div class="stat-col">
+        <b id="countDisplay">0</b>
+        <small>Urges Deflected</small>
+      </div>
+      <div class="stat-col">
+        <b id="timeSavedDisplay">0m</b>
+        <small>Focus Preserved</small>
+      </div>
+      <button id="resetStatsBtn" class="btn-icon" title="Reset stats">↻</button>
+    </div>
+
+    <!-- Quick Distraction Domains Manager -->
+    <section class="domains-section">
+      <div class="section-header">
+        <label class="section-label">BLOCKED WEBSITES (<span id="domainCount">0</span>)</label>
+      </div>
+
+      <!-- Quick Toggle Presets -->
+      <div class="quick-presets">
+        <span class="quick-label">Presets:</span>
+        <button class="quick-chip" data-domain="instagram.com">Instagram</button>
+        <button class="quick-chip" data-domain="youtube.com">YouTube</button>
+        <button class="quick-chip" data-domain="reddit.com">Reddit</button>
+        <button class="quick-chip" data-domain="x.com">X / Twitter</button>
+        <button class="quick-chip" data-domain="tiktok.com">TikTok</button>
+        <button class="quick-chip" data-domain="netflix.com">Netflix</button>
+      </div>
+
+      <!-- Add Domain Row -->
+      <div class="add-domain-row">
+        <input type="text" id="newDomainInput" placeholder="Add custom domain (e.g. twitch.tv)">
+        <button id="addDomainBtn" class="btn-add">+</button>
+      </div>
+
+      <!-- Domain Chips List -->
+      <div class="domain-chips" id="domainChips"></div>
+    </section>
+
+    <!-- Config Sync & Import/Export -->
+    <section class="config-section">
+      <div class="config-actions">
+        <label class="file-label" title="Import JSON config from DigiCalm">
+          <span>⬆️ Import Config</span>
+          <input type="file" id="configFile" accept="application/json">
+        </label>
+        <button id="exportConfigBtn" class="btn-secondary" title="Export current config as JSON">
+          <span>⬇️ Export</span>
+        </button>
+        <button id="copyConfigBtn" class="btn-secondary" title="Copy config to clipboard">
+          <span>📋 Copy</span>
+        </button>
+      </div>
+      <span class="status-msg" id="syncStatus">Syncs with DigiCalm website</span>
+    </section>
+
+    <footer class="footer">
+      Blocking applies to Chrome tabs. Emergency unlock is intentional.
+    </footer>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

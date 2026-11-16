@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DigiCalm Shield — Pause & Refocus</title>
+  <link rel="stylesheet" href="blocked.css">
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-icon">✳</span>
+        <b>DigiCalm</b>
+        <span class="shield-tag">SHIELD ACTIVE</span>
+      </div>
+      <div class="timer-chip" id="timerChip">
+        <span class="timer-dot"></span>
+        <span id="headerTimer">--:-- remaining</span>
+      </div>
+    </header>
+
+    <main class="container">
+      <div class="shield-card">
+        <div class="shield-badge-wrap">
+          <div class="shield-glow"></div>
+          <div class="shield-icon">🛡️</div>
+        </div>
+
+        <span class="eyebrow">ATTENTION BOUNDARY</span>
+        <h1>You planned to focus.<br><em>Let's protect that time.</em></h1>
+        <p class="subtitle">
+          This website is on your Focus Shield list. DigiCalm has safely paused navigation so you can keep your momentum.
+        </p>
+
+        <!-- Current Active Study Task -->
+        <div class="task-banner">
+          <div class="task-banner-top">
+            <span class="task-pill">🎯 YOUR ACTIVE GOAL</span>
+            <span class="task-phase" id="sessionPhase">Study Block</span>
+          </div>
+          <b class="task-title" id="taskTitle">Focused Study Session</b>
+          <p class="task-desc">Don't break your train of thought for an endless algorithmic scroll.</p>
+        </div>
+
+        <!-- Live Session Progress -->
+        <div class="timer-card">
+          <div class="timer-info">
+            <span>Focus Block Countdown</span>
+            <b id="countdownDisplay">Calculating...</b>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+        </div>
+
+        <!-- Deflection stats -->
+        <div class="impact-grid">
+          <div class="impact-item">
+            <b id="blockedCountDisplay">1</b>
+            <span>Urges deflected today</span>
+          </div>
+          <div class="impact-item">
+            <b id="savedMinutesDisplay">~15m</b>
+            <span>Deep focus preserved</span>
+          </div>
+        </div>
+
+        <!-- 10-Second Mindful Breathing Reset -->
+        <div class="breathing-card">
+          <div class="breathing-top">
+            <div>
+              <b>The 10-Second Urge Reset</b>
+              <small>Dopamine urges dissipate after a brief conscious pause</small>
+            </div>
+            <button id="startBreatheBtn" class="breathe-trigger-btn">Start 10s Reset</button>
+          </div>
+          <div class="breath-visual-wrap" id="breathVisualWrap">
+            <div class="breath-orb" id="breathOrb">
+              <span id="breathCount">10</span>
+            </div>
+            <p id="breathInstruction">Click start to pause before deciding.</p>
+          </div>
+        </div>
+
+        <!-- Primary Return Actions -->
+        <div class="action-stack">
+          <button id="backBtn" class="primary-btn">
+            <span>← Return to My Task</span>
+          </button>
+          <a href="http://localhost:5173" target="_blank" rel="noopener noreferrer" class="secondary-btn" id="openAppBtn">
+            <span>Open DigiCalm Planner ↗</span>
+          </a>
+        </div>
+
+        <!-- Emergency Unlock / Safety Hatch -->
+        <div class="emergency-box">
+          <button id="emergencyToggle" class="link-btn">
+            Need emergency access?
+          </button>
+          <div id="emergencyPanel" class="emergency-panel hidden">
+            <p>
+              DigiCalm is a supportive guide, not an unbreakable lock. If you genuinely need this website, you can end the shield.
+            </p>
+            <button id="emergencyUnlockBtn" class="danger-btn">
+              <span id="unlockBtnLabel">Emergency Unlock (5s pause)</span>
+            </button>
+          </div>
+          <div id="unlockedMessage" class="unlocked-msg hidden">
+            ✅ Focus Shield ended. Websites are unlocked. You can now reload this page.
+          </div>
+        </div>
+
+        <!-- Research Footnote -->
+        <div class="research-note">
+          <b>Cognitive science insight:</b> Gloria Mark (UC Irvine) showed it takes <b>23 minutes and 15 seconds</b> to regain deep focus after a distraction. Every urge you deflect protects your grade and your peace of mind.
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="blocked.js"></script>
+</body>
+</html>

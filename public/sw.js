@@ -57,5 +57,6 @@ self.addEventListener('fetch', event => {
         await (await caches.open(CACHE_NAME)).put(request, copy);
       }
       return response;
+    })()
   );
 });
