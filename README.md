@@ -79,3 +79,18 @@ Visit `http://localhost:5173` in your browser.
 - **Web App:** React 18, TypeScript, Tailwind CSS, Vite, Framer Motion, Lucide Icons, Recharts, Web Audio API, Service Worker PWA.
 - **Chrome Extension:** Chrome Manifest V3, `declarativeNetRequest` dynamic rules, `chrome.alarms` background service worker, `chrome.storage.local`, `chrome.notifications`.
 - **Privacy:** 100% client-side. Zero external tracking servers, no telemetry, no credentials required.
+
+
+## 📐 System UI/UX Wireframe & Information Architecture
+
+DigiCalm provides a cohesive multi-surface architecture combining a responsive React study sanctuary with a Manifest V3 Google Chrome website blocking extension:
+
+![DigiCalm System Architecture Wireframe Blueprint](digicalm-wireframe-blueprint.png)
+
+### Key Architectural Layers:
+1. **Global Workspace Navigation**: Persistent sidebar housing Focus Room, Study Planner, DigiCalm Shield, Habit Lab, Wind-down Sanctuary, and My Insights.
+2. **Focus Room**: Circular countdown timer ring with synchronized study/break states and Web Audio focus soundscapes.
+3. **DigiCalm Shield (Chrome Extension)**: Real Declarative Net Request rules, 10s mindful urge reset orb, and deflection telemetry.
+4. **Habit Lab & Digital Detox Studio**: Daily wellness commitments with completion toggle, custom habit builder, and one-click deletion.
+5. **Wind-Down & Customizable Bedtime Scheduler**: Exact time selector (`<input type="time">`), automatic rollover of incomplete tasks to tomorrow, and gentle audio/voice prompts.
+6. **Authentic Weekly Rhythm Analytics**: Strict `localDay` timezone alignment with discrete Recharts daily BarChart.
